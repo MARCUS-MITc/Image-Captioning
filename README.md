@@ -56,8 +56,53 @@ In a typical setting without Attention, you could simply average the encoded ima
 
 In a setting with Attention, we want the Decoder to be able to look at different parts of the image at different points in the sequence. For example, while generating the word football in a man holds a football, the Decoder would know to focus on – you guessed it – the football!
 
+![image](https://github.com/MARCUS-MITc/Image-Captioning/assets/123622512/94c753de-1e6d-430d-a4a4-136a8ee3329b)
 
-![image](https://github.com/MARCUS-MITc/Image-Captioning/assets/123622512/13bb457d-25a6-4e91-a523-aa6053df6ecd)
+Instead of the simple average, we use the weighted average across all pixels, with the weights of the important pixels being greater. This weighted representation of the image can be concatenated with the previously generated word at each step to generate the next word.
+
+# Attention
+The Attention network computes these weights.
+
+Intuitively, how would you estimate the importance of a certain part of an image? You would need to be aware of the sequence you have generated so far, so you can look at the image and decide what needs describing next. For example, after you mention *a man*, it is logical to declare that he is *holding a football*.
+
+This is exactly what the Attention mechanism does – it considers the sequence generated thus far, and attends to the part of the image that needs describing next.
+![image](https://github.com/MARCUS-MITc/Image-Captioning/assets/123622512/f628bf45-c7e3-441d-b10c-33d5c75421ba)
+
+We will use soft Attention, where the weights of the pixels add up to 1. If there are P pixels in our encoded image, then at each timestep t –
+
+![image](https://github.com/MARCUS-MITc/Image-Captioning/assets/123622512/98e3ef31-b762-47cf-82ef-3c2fb7a97996)
+
+You could interpret this entire process as computing the probability that a pixel is the place to look to generate the next word.
+
+# Putting it all together
+It might be clear by now what our combined network looks like.
+
+![image](https://github.com/MARCUS-MITc/Image-Captioning/assets/123622512/db4db281-2f8b-4419-8034-b4f831f136ae)
+
+![image](https://github.com/MARCUS-MITc/Image-Captioning/assets/123622512/8ae94866-8853-4ba9-b6c3-9a619f8955dd)
+
+
+Once the Encoder generates the encoded image, we transform the encoding to create the initial hidden state h (and cell state C) for the LSTM Decoder.
+At each decode step,
+the encoded image and the previous hidden state is used to generate weights for each pixel in the Attention network.
+the previously generated word and the weighted average of the encoding are fed to the LSTM Decoder to generate the next word.
+
+# Results
+
+![image](https://github.com/MARCUS-MITc/Image-Captioning/assets/123622512/ffeb4e04-fed8-4ecf-8a82-2836e4fd62d9)
+![image](https://github.com/MARCUS-MITc/Image-Captioning/assets/123622512/e31bef28-a038-426b-937c-c0021e54195b)
+![image](https://github.com/MARCUS-MITc/Image-Captioning/assets/123622512/d20316ee-27a3-412d-a402-954a9928edee)
+![image](https://github.com/MARCUS-MITc/Image-Captioning/assets/123622512/9fffa5c7-2f21-417e-ad46-616cc1848cd6)
+![image](https://github.com/MARCUS-MITc/Image-Captioning/assets/123622512/4d2357ab-587e-4afd-8a1c-992b91c6ef5d)
+![image](https://github.com/MARCUS-MITc/Image-Captioning/assets/123622512/6d259dc3-1b65-4106-87a6-7b28d2238f3b)
+
+
+
+
+
+
+
+
 
 
 
